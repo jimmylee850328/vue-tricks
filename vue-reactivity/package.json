@@ -1,0 +1,50 @@
+{
+  "name": "vue-pj-vue2-vite-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "dev": "vite --config vite.config.dev.js",
+    "build": "vite build",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "cypress:open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mdi/font": "^7.0.96",
+    "axios": "^0.21.4",
+    "esbuild": "^0.12.28",
+    "moment": "^2.29.1",
+    "qs": "^6.10.1",
+    "sass": "~1.32.6",
+    "vue": "^2.6.14",
+    "vue-router": "^3.5.2",
+    "vuetify": "^2.5.6",
+    "vuex": "^3.6.0"
+  },
+  "devDependencies": {
+    "@mdi/js": "^6.5.95",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@vue/test-utils": "^1.3.0",
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "cypress": "^9.3.1",
+    "eslint": "^8.9.0",
+    "eslint-plugin-vue": "^8.4.1",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "happy-dom": "^2.31.1",
+    "stylelint": "^14.2.0",
+    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-config-standard": "^24.0.0",
+    "stylelint-order": "^5.0.0",
+    "unplugin-vue-components": "^0.21.0",
+    "vite": "^2.9.13",
+    "vite-plugin-html": "^3.0.3",
+    "vite-plugin-vue2": "^1.9.3",
+    "vitest": "^0.2.5",
+    "vue-template-compiler": "^2.6.14"
+  }
+}
