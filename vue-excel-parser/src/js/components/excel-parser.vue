@@ -19,8 +19,8 @@
                     :key="index"
                 >
                     <v-switch
-                        v-model="part_no_is_visible"
-                        label="我想調整 part_no"
+                        v-model="is_visible"
+                        label="我想調整其他參數"
                         class="px-9"
                     ></v-switch>
 
@@ -31,7 +31,7 @@
                             cols="6"
                         >
                             <v-text-field
-                                v-show="!obj_key.includes('part_no') || part_no_is_visible"
+                                v-show="['start_row', 'end_row', 'future_QTY_end'].includes(obj_key) || is_visible"
                                 :label="obj_key"
                                 v-model="item[obj_key]"
                                 outlined
@@ -47,16 +47,14 @@
 
         <v-row no-gutters class="mt-3">
             <v-file-input
-                filled
-                label="File input"
+                label="請上傳檔案"
                 multiple
                 id="file-input"
                 truncate-length="15"
                 @change="read_xlsx_file"
+                style="max-width: 300px"
+                class="px-9"
             ></v-file-input>
-            <v-spacer></v-spacer>
-            <!-- <v-btn color="primary" @click="write_file()" class="mr-2"> 生成檔案 </v-btn>
-            <v-btn color="primary" @click="write_excel_file()"> get excel </v-btn> -->
         </v-row>
     </div>
 </template>
@@ -73,17 +71,18 @@
             return {
                 client: "6548",
                 order_date: new Date(),
+                cut_off_date: null,
 
                 param: {
                     "YMMWJ": {
                         start_row: 21,
                         end_row: 25,
 
-                        QTY_start: "KS",
-                        QTY_end: "KT",
-
-                        future_QTY_start: "KU",
-                        future_QTY_end: "LG",
+                        QTY_start: "",
+                        QTY_end: "",
+                        future_QTY_start: "",
+                        
+                        future_QTY_end: "LI",
 
                         part_no_start: "C",
                         part_no_end: "C",
@@ -92,16 +91,17 @@
                         start_row: 19,
                         end_row: 49,
 
-                        QTY_start: "KY",
-                        QTY_end: "KZ",
-                        future_QTY_start: "LA",
-                        future_QTY_end: "LM",
+                        QTY_start: "",
+                        QTY_end: "",
+                        future_QTY_start: "",
+
+                        future_QTY_end: "LO",
 
                         part_no_start: "C",
                         part_no_end: "C",
                     }
                 },
-                part_no_is_visible: false,
+                is_visible: false,
                 file_json: {},
                 sheet_names: [],
                 excel_object: {},
@@ -128,14 +128,32 @@
                 }
                 return out + diff;
             },
+            
+            get_first_day_of_month (date, diff, day) {
+                let cut_off_date = moment(date).add(diff, 'month').format('YYYY-MM-01');
+                let cut_off_month = moment(cut_off_date).get('month') + 1;
+                cut_off_date = moment(cut_off_date).day(day);
+                if (cut_off_date.get('month') + 1 != cut_off_month) {
+                    cut_off_date.add(1, 'week');
+                }
+
+                return cut_off_date.format("YYYY-MM-DD");
+            },
 
             init () {
-                // let current_date = moment();
-                // let fixed_date = moment('2022-07-01');
-                // const months = current_date.diff(fixed_date, 'months');
+                this.cut_off_date = this.get_first_day_of_month(this.order_date, 2, 2);
+                
+                let current_date = moment();
+                let fixed_date = moment('2022-07-01');
+                const months = current_date.diff(fixed_date, 'months');
 
-                // this.QTY_start = `${this.to_letters(this.from_letters("KS", 2 * months))}_21`;
-                // this.QTY_end = `${this.to_letters(this.from_letters("KT", 2 * months))}_25`;
+                this.param.YMMWJ.QTY_start = this.to_letters(this.from_letters("KS", 2 * months));
+                this.param.YMMWJ.QTY_end = this.to_letters(this.from_letters("KT", 2 * months));
+                this.param.YMMWJ.future_QTY_start = this.to_letters(this.from_letters("KU", 2 * months));
+
+                this.param.YIMM.QTY_start = this.to_letters(this.from_letters("KY", 2 * months));
+                this.param.YIMM.QTY_end = this.to_letters(this.from_letters("KZ", 2 * months));
+                this.param.YIMM.future_QTY_start = this.to_letters(this.from_letters("LA", 2 * months));
             },
 
             async read_xlsx_file ($event) {
@@ -146,7 +164,7 @@
                 }
 
                 this.write_file();
-                // this.write_excel_file();
+                this.write_excel_file();
             },
 
             get_list (origin_start_col, origin_start_row, origin_end_col, origin_end_row, diff) {
@@ -192,9 +210,19 @@
                                 "part_no": part_no,
                                 "order_no": order_no,
                                 "QTY": QTY_info,
+
+                                "cut_off_request": new Date(moment(this.cut_off_date).format("YYYY-MM-DD")),
+                                "ship_date": new Date(moment(this.cut_off_date).subtract(1, 'day').format("YYYY-MM-DD")),
+                                "ETD": new Date(moment(this.cut_off_date).add(7, 'day').format("YYYY-MM-DD")),
+                                "ETA": new Date(moment(this.cut_off_date).add(14, 'day').format("YYYY-MM-DD")),
+                                "mode": "A",
+                                "ship": "S"
                             })
                         }
                     }
+
+                    let start_ETD = this.get_first_day_of_month(this.order_date, 3, 2); // 11/1
+                    let count = 0;
 
                     for (let k = 0; k < future_QTY_list.length; k++) {
                         let part_no_row = part_no_list[k % part_no_list.length].split("_")[0];
@@ -205,7 +233,20 @@
                         let part_no = this.file_json[sheet_name][part_no_col][part_no_row];
                         let QTY_info = this.file_json[sheet_name][QTY_list_col][QTY_list_row];
 
+                        if (k % part_no_list.length == 0 && k != 0) {
+                            // N月第一個禮拜二
+                            count++;
+                            if (count % 2 == 0) {
+                                start_ETD = this.get_first_day_of_month(this.order_date, 3 + count / 2, 2);
+                            }
+                            // N月第三個禮拜二
+                            else {
+                                start_ETD = moment(start_ETD).add(2, 'week').format("YYYY-MM-DD");
+                            }
+                        }
+
                         future_objects.push({
+                            "ETD": new Date(moment(start_ETD).add(1, 'week').format("YYYY-MM-DD")),
                             "client": this.client,
                             "part_no": part_no,
                             "QTY": QTY_info,
@@ -225,7 +266,7 @@
                         headerStyle: {
                             backgroundColor: '#deeaf6',
                         },
-                        fileName: 'file.xlsx',
+                        fileName: `${sheet_name}.xlsx`,
                         fontSize: 12
                     });
                 }

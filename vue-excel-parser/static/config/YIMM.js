@@ -35,35 +35,35 @@ export const schema = {
             column: '出貨日',
             type: Date,
             format: 'yyyy/mm/dd',
-            value: info => info.order_date
+            value: info => info.ship_date
         },
         {
             column: '結關日',
             type: Date,
             format: 'yyyy/mm/dd',
-            value: info => info.order_date
+            value: info => info.cut_off_request
         },
         {
             column: 'ETD',
             type: Date,
             format: 'yyyy/mm/dd',
-            value: info => info.order_date
+            value: info => info.ETD
         },
         {
             column: 'ETA',
             type: Date,
             format: 'yyyy/mm/dd',
-            value: info => info.order_date
+            value: info => info.ETA
         },
         {
             column: 'MODE',
             type: String,
-            value: info => ""
+            value: info => info.mode
         },
         {
             column: 'SHIP',
             type: String,
-            value: info => ""
+            value: info => info.ship
         },
         {
             column: 'YMTT Remark',
@@ -82,7 +82,7 @@ export const schema = {
             column: 'ETD',
             type: Date,
             format: 'yyyy/mm/dd',
-            value: info => new Date()
+            value: info => info.ETD
         },
         {
             column: '客戶名稱',
