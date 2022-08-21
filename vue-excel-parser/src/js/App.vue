@@ -1,30 +1,23 @@
 <template>
     <div>
         <v-app id="inspire">
-            <!-- <div v-if="has_login"> -->
-                <Toolbar/>
-                <v-content>
-                    <div class="pa-1">
-                        <router-view></router-view>
-                    </div>
-                </v-content>
-            <!-- </div>
-                <div v-else>
-                <Login/>
-            </div> -->
+            <Toolbar />
+            <div style="height: 64px;"></div>
+            <ExcelParser />
         </v-app>
     </div>
-    
 </template>
 
 <script>
     import Toolbar from '@/components/toolbar.vue';
+    import ExcelParser from './components/excel-parser.vue';
     export default {
         name: 'App',
+        components: {
+            Toolbar, ExcelParser
+        },
         
-        components: {Toolbar},
-        
-        data() {
+        data () {
             return {
                 
             }
