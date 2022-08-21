@@ -12,7 +12,7 @@ const pathResolve = (dir) => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  //base: '/static/homepage/dist/',  佈署時有需要可以用到
+  base: './',
 
   plugins: [
     babel(),
@@ -34,7 +34,15 @@ export default defineConfig({
   build: {
     commonjsOptions: {
       ignoreTryCatch: false
-    }
+    },
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      }
+    },
+    assetsDir: "vue-excel-parser/assets"
   },
 
   css: {
