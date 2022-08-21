@@ -8,8 +8,8 @@ export default new Router({
     mode: 'history',
     routes: [
         {
-            path: '/',
-            name: '',
+            path: '*',
+            name: 'ExcelParser',
             component: ExcelParser
         }
     ],
