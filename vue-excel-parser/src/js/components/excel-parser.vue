@@ -198,7 +198,8 @@
                         let QTY_list_row = QTY_list[k].split("_")[0];
                         let QTY_list_col = QTY_list[k].split("_")[1];
 
-                        let order_no = order_no_list[k % order_no_list.length];
+
+                        let order_no = order_no_list[parseInt(k / part_no_list.length)];
                         let part_no = this.file_json[sheet_name][part_no_col][part_no_row];
                         let QTY_info = this.file_json[sheet_name][QTY_list_col][QTY_list_row];
 
